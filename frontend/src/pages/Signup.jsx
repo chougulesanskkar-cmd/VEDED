@@ -32,7 +32,7 @@ export default function Signup() {
         <div className="min-h-screen grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] bg-[var(--v-bg)]">
             <div className="flex items-center justify-center px-6 py-12">
                 <form onSubmit={submit} className="w-full max-w-md" data-testid="signup-form">
-                    <Link to="/"><VededLogo /></Link>
+                    <Link to="/"><VededLogo to={null} /></Link>
                     <h1 className="font-display-tight font-black text-4xl mt-8">Activate your studio</h1>
                     <p className="text-neutral-400 mt-2 text-sm">10 free images, 1 free video and audio to start.</p>
                     <div className="mt-8 space-y-5">

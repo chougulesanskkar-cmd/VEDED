@@ -33,7 +33,7 @@ export default function Login() {
                 <img src="https://images.unsplash.com/photo-1614850523011-8f49ffc73908?w=1600" alt="" className="w-full h-full object-cover opacity-60" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-[var(--v-bg)] via-transparent to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-between p-12">
-                    <Link to="/"><VededLogo /></Link>
+                    <Link to="/"><VededLogo to={null} /></Link>
                     <div>
                         <h2 className="font-display-tight font-black text-4xl leading-tight max-w-md">
                             Cinematic ideas, <span className="text-[var(--v-lime)]">rendered.</span>
@@ -44,7 +44,7 @@ export default function Login() {
             </div>
             <div className="flex items-center justify-center px-6 py-12">
                 <form onSubmit={submit} className="w-full max-w-md" data-testid="login-form">
-                    <div className="lg:hidden mb-8"><Link to="/"><VededLogo /></Link></div>
+                    <div className="lg:hidden mb-8"><VededLogo to="/" /></div>
                     <h1 className="font-display-tight font-black text-4xl">Welcome back</h1>
                     <p className="text-neutral-400 mt-2 text-sm">Sign in to your VEDED studio.</p>
                     <div className="mt-8 space-y-5">
