@@ -3,6 +3,16 @@ import GenerationStudio from "@/components/GenerationStudio";
 import { api } from "@/lib/api";
 import { Zap } from "lucide-react";
 
+const MODELS = [
+    { id: "flux-schnell", label: "FLUX Schnell", badge: "FAST", description: "4-step diffusion · ~4s render · ideal for iteration" },
+    { id: "sdxl-turbo", label: "SDXL Turbo", badge: "PRO", description: "Photoreal fidelity · larger detail budget" },
+    { id: "flux-1.1-ultra", label: "FLUX 1.1 Ultra", badge: "4K", description: "Best-in-class — 4K native, 40s render" },
+];
+const TOGGLES = [
+    { id: "upscale", label: "AI Upscaling", default: true },
+    { id: "denoise", label: "Neural Denoise" },
+    { id: "color_match", label: "Color Match", default: true },
+];
 const STYLES = [
     { id: "photorealistic", label: "Photorealistic", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600" },
     { id: "cyberpunk", label: "Cyberpunk", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600" },
@@ -26,12 +36,16 @@ export default function ImagesStudio() {
             title="Images Studio"
             subtitle="Neural rendering. Prompt-first. Photorealistic to anime — one engine."
             placeholder="Describe your creative vision… e.g., 'Futuristic organic architecture in a bioluminescent jungle, cinematic lighting, 8k'"
+            models={MODELS}
+            toggles={TOGGLES}
             stylePresets={STYLES}
             aspectRatios={RATIOS}
             creations={creations}
             onCreate={onCreate}
             onDelete={onDelete}
             accentIcon={Zap}
+            uploadHint="Reference image"
+            uploadAccept="image/*"
             testIdPrefix="images"
         />
     );

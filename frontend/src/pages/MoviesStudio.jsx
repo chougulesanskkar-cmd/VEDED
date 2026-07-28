@@ -5,6 +5,16 @@ import { Clapperboard, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useNavigate } from "react-router-dom";
 
+const MODELS = [
+    { id: "veded-compiler-v1", label: "VEDED Compiler v1", badge: "STUDIO", description: "Script → scenes → parallel render → FFmpeg stitch" },
+    { id: "veded-compiler-4k", label: "VEDED Compiler 4K", badge: "4K", description: "Uncompressed 4K master · Dolby Atmos" },
+];
+const TOGGLES = [
+    { id: "auto_dub", label: "Auto-Dub (Sarvam)", default: true },
+    { id: "burn_captions", label: "Burn Captions" },
+    { id: "crossfade", label: "Crossfade Scenes", default: true },
+    { id: "color_grade", label: "Color Grade" },
+];
 const STYLES = [
     { id: "epic-fantasy", label: "Epic Fantasy", image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600" },
     { id: "noir-thriller", label: "Noir Thriller", image: "https://images.unsplash.com/photo-1478720568477-b0829d60d9f6?w=600" },
@@ -53,12 +63,16 @@ export default function MoviesStudio() {
             title="Feature Film"
             subtitle="Long-format movie compiler. 30–60 minute cinematic exports with automated stitching."
             placeholder="Paste your full script or high-level narrative. VEDED will segment scenes, dispatch parallel renders, dub in your chosen language and stitch a final cut."
+            models={MODELS}
+            toggles={TOGGLES}
             stylePresets={STYLES}
             aspectRatios={RATIOS}
             creations={creations}
             onCreate={onCreate}
             onDelete={onDelete}
             accentIcon={Clapperboard}
+            uploadHint="Upload full script (.txt, .pdf)"
+            uploadAccept=".txt,.pdf,.md,.docx"
             testIdPrefix="movies"
         />
     );

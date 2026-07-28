@@ -1,27 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { toast } from "sonner";
-import { Sparkles, Play, Download, Trash2, ImageIcon } from "lucide-react";
+import { Sparkles, Play, Download, Trash2, Paperclip, ChevronDown, Cpu, X, Check } from "lucide-react";
 import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
 import { Textarea } from "@/components/ui/textarea";
+import {
+    DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 /**
- * Reusable generation studio. Props:
+ * Props:
  *  - kind: "image" | "video" | "audio" | "movie"
  *  - title, subtitle, placeholder
- *  - stylePresets: [{ id, label, image }]
- *  - aspectRatios: [{ id, label }]
- *  - creations: list from parent
- *  - onCreate: called with new creation on success
+ *  - models: [{ id, label, badge?, description? }]
+ *  - toggles: [{ id, label, default? }]
+ *  - stylePresets, aspectRatios, creations
+ *  - uploadHint: string  (e.g. "Reference image", "Voice sample")
+ *  - uploadAccept: "image/*" | "audio/*" | "*"
+ *  - onCreate, onDelete
  */
 export default function GenerationStudio({
     kind,
     title,
     subtitle,
     placeholder,
+    models = [],
+    toggles = [],
     stylePresets = [],
     aspectRatios = [],
     creations = [],
+    uploadHint = "Reference file",
+    uploadAccept = "*",
     onCreate,
     onDelete,
     accentIcon: Icon = Sparkles,
@@ -31,14 +40,23 @@ export default function GenerationStudio({
     const [prompt, setPrompt] = useState("");
     const [style, setStyle] = useState(stylePresets[0]?.id || "");
     const [aspect, setAspect] = useState(aspectRatios[0]?.id || "16:9");
+    const [model, setModel] = useState(models[0]?.id || "");
+    const [toggleState, setToggleState] = useState(
+        Object.fromEntries(toggles.map((t) => [t.id, !!t.default]))
+    );
+    const [file, setFile] = useState(null);
     const [loading, setLoading] = useState(false);
+    const fileInput = useRef(null);
+
+    const currentModel = models.find((m) => m.id === model) || models[0];
 
     const generate = async () => {
         if (!prompt.trim()) { toast.error("Add a prompt to describe your vision"); return; }
         setLoading(true);
         try {
             const { data } = await api.post("/veded/generate", {
-                kind, prompt, style, aspect_ratio: aspect,
+                kind, prompt, style, aspect_ratio: aspect, model,
+                options: { ...toggleState, reference_file: file?.name || null },
             });
             toast.success(`${kind.charAt(0).toUpperCase() + kind.slice(1)} rendered`, { description: "Your creation is ready." });
             onCreate && onCreate(data.creation);
@@ -59,44 +77,130 @@ export default function GenerationStudio({
                 {subtitle && <p className="text-neutral-400 mt-2 text-[15px] max-w-2xl">{subtitle}</p>}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-start">
-                <div className="v-card p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Icon size={16} className="text-[var(--v-lime)]" />
-                        <span className="font-display font-semibold text-[11px] tracking-[0.25em] text-neutral-400">NEURAL PROMPT INTERFACE</span>
-                    </div>
-                    <Textarea
-                        data-testid={`${testIdPrefix}-prompt`}
-                        value={prompt}
-                        onChange={(e) => setPrompt(e.target.value)}
-                        placeholder={placeholder}
-                        rows={4}
-                        className="w-full bg-black/40 border-[var(--v-border)] text-neutral-200 placeholder:text-neutral-600 resize-none focus:border-[var(--v-lime)] rounded-lg text-[15px] leading-relaxed"
-                    />
-                    <div className="flex flex-wrap items-center gap-3 mt-4 text-[12px] text-neutral-400">
-                        <span className="tabular-nums">{prompt.length} / 2000</span>
-                        <span className="text-neutral-600">•</span>
-                        <span>estimated render time: {kind === "video" ? "~28s" : kind === "audio" ? "~8s" : kind === "movie" ? "~4m" : "~4.2s"}</span>
-                    </div>
-                </div>
-                <button
-                    data-testid={`${testIdPrefix}-generate`}
-                    disabled={loading}
-                    onClick={generate}
-                    className="v-btn v-btn-lime h-full min-h-[168px] w-full lg:w-[168px] flex-col text-lg font-display-tight tracking-tight rounded-2xl v-glow-lime disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                    {loading ? (
-                        <>
-                            <div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                            <span className="mt-2 text-[14px]">RENDERING</span>
-                        </>
-                    ) : (
-                        <>
-                            <Sparkles size={26} strokeWidth={2.5} />
-                            <span className="mt-2">{kind === "movie" ? "COMPILE" : "GENERATE"}</span>
-                        </>
+            {/* Prompt card with integrated options + compact Generate */}
+            <div className="v-card p-6">
+                <div className="flex items-center gap-2 mb-4">
+                    <Icon size={16} className="text-[var(--v-lime)]" />
+                    <span className="font-display font-semibold text-[11px] tracking-[0.25em] text-neutral-400">NEURAL PROMPT INTERFACE</span>
+                    {currentModel?.badge && (
+                        <span className="v-chip v-chip-lime text-[9px] ml-auto">{currentModel.badge}</span>
                     )}
-                </button>
+                </div>
+                <Textarea
+                    data-testid={`${testIdPrefix}-prompt`}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder={placeholder}
+                    rows={4}
+                    className="w-full bg-black/40 border-[var(--v-border)] text-neutral-200 placeholder:text-neutral-600 resize-none focus:border-[var(--v-lime)] rounded-lg text-[15px] leading-relaxed"
+                />
+
+                {/* Options row */}
+                <div className="flex flex-wrap items-center gap-2 mt-4">
+                    {/* Model selector */}
+                    {models.length > 0 && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    data-testid={`${testIdPrefix}-model-trigger`}
+                                    className="inline-flex items-center gap-2 px-3 h-9 rounded-full border border-[var(--v-border)] bg-[var(--v-surface-2)] hover:border-[var(--v-lime)] text-[12px] text-neutral-200 transition-colors"
+                                >
+                                    <Cpu size={13} className="text-[var(--v-lime)]" />
+                                    <span className="font-semibold">{currentModel?.label || "Model"}</span>
+                                    <ChevronDown size={12} className="text-neutral-500" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="bg-[var(--v-surface-2)] border-[var(--v-border-2)] w-72">
+                                <DropdownMenuLabel className="text-neutral-400 text-[10px] tracking-[0.2em] uppercase">AI Engine</DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-[var(--v-border)]" />
+                                {models.map((m) => (
+                                    <DropdownMenuItem
+                                        key={m.id}
+                                        onClick={() => setModel(m.id)}
+                                        data-testid={`${testIdPrefix}-model-${m.id}`}
+                                        className="flex flex-col items-start gap-0.5"
+                                    >
+                                        <div className="flex items-center gap-2 w-full">
+                                            <span className="font-semibold text-[13px] text-neutral-100">{m.label}</span>
+                                            {m.badge && <span className="v-chip v-chip-lime text-[9px] ml-auto">{m.badge}</span>}
+                                            {model === m.id && <Check size={12} className="text-[var(--v-lime)]" />}
+                                        </div>
+                                        {m.description && <div className="text-[11px] text-neutral-500">{m.description}</div>}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+
+                    {/* Upload / Reference */}
+                    <input
+                        ref={fileInput}
+                        type="file"
+                        accept={uploadAccept}
+                        className="hidden"
+                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        data-testid={`${testIdPrefix}-file-input`}
+                    />
+                    <button
+                        onClick={() => fileInput.current?.click()}
+                        data-testid={`${testIdPrefix}-upload-btn`}
+                        className={`inline-flex items-center gap-2 px-3 h-9 rounded-full border text-[12px] transition-colors ${
+                            file ? "border-[var(--v-lime)] bg-[rgba(195,244,0,0.08)] text-[var(--v-lime)]" : "border-[var(--v-border)] bg-[var(--v-surface-2)] text-neutral-300 hover:border-[var(--v-lime)]"
+                        }`}
+                    >
+                        <Paperclip size={13} />
+                        <span className="font-semibold truncate max-w-[140px]">{file ? file.name : uploadHint}</span>
+                        {file && (
+                            <X size={12} onClick={(ev) => { ev.stopPropagation(); setFile(null); if (fileInput.current) fileInput.current.value=""; }} className="text-neutral-400 hover:text-red-400" />
+                        )}
+                    </button>
+
+                    {/* Toggles */}
+                    {toggles.map((t) => (
+                        <button
+                            key={t.id}
+                            onClick={() => setToggleState((s) => ({ ...s, [t.id]: !s[t.id] }))}
+                            data-testid={`${testIdPrefix}-toggle-${t.id}`}
+                            className={`inline-flex items-center gap-2 px-3 h-9 rounded-full border text-[12px] transition-colors ${
+                                toggleState[t.id]
+                                    ? "border-[var(--v-lime)] bg-[rgba(195,244,0,0.08)] text-[var(--v-lime)]"
+                                    : "border-[var(--v-border)] bg-[var(--v-surface-2)] text-neutral-300 hover:border-[var(--v-border-2)]"
+                            }`}
+                        >
+                            <span className={`w-3.5 h-3.5 rounded-sm border flex items-center justify-center ${toggleState[t.id] ? "bg-[var(--v-lime)] border-[var(--v-lime)]" : "border-[var(--v-border-2)]"}`}>
+                                {toggleState[t.id] && <Check size={10} className="text-black" strokeWidth={4} />}
+                            </span>
+                            <span className="font-semibold">{t.label}</span>
+                        </button>
+                    ))}
+
+                    <div className="flex-1" />
+
+                    <div className="text-[11px] text-neutral-500 hidden sm:block">
+                        <span className="tabular-nums">{prompt.length}/2000</span>
+                        <span className="mx-2 text-neutral-700">·</span>
+                        <span>~{kind === "video" ? "28s" : kind === "audio" ? "8s" : kind === "movie" ? "4m" : "4.2s"}</span>
+                    </div>
+
+                    <button
+                        data-testid={`${testIdPrefix}-generate`}
+                        disabled={loading}
+                        onClick={generate}
+                        className="v-btn v-btn-lime h-10 px-5 text-[12px] tracking-[0.08em] v-glow-lime disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                        {loading ? (
+                            <>
+                                <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                RENDERING
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles size={14} strokeWidth={2.5} />
+                                {kind === "movie" ? "COMPILE" : "GENERATE"}
+                            </>
+                        )}
+                    </button>
+                </div>
             </div>
 
             {/* Style + aspect */}
@@ -119,10 +223,7 @@ export default function GenerationStudio({
                                 >
                                     <img src={s.image} alt={s.label} className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                    <div className="absolute bottom-3 left-3 right-3 flex items-center gap-1.5">
-                                        <ImageIcon size={12} className="text-white/80" />
-                                        <span className="text-white font-semibold text-[13px]">{s.label}</span>
-                                    </div>
+                                    <div className="absolute bottom-3 left-3 right-3 text-white font-semibold text-[13px]">{s.label}</div>
                                     {style === s.id && (
                                         <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-[var(--v-lime)] flex items-center justify-center text-black text-xs font-black">✓</div>
                                     )}

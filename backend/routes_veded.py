@@ -17,9 +17,13 @@ class GenerateReq(BaseModel):
     kind: str = Field(pattern="^(image|video|audio|movie)$")
     prompt: str = Field(min_length=1, max_length=2000)
     style: Optional[str] = None
+    model: Optional[str] = None
     aspect_ratio: Optional[str] = "16:9"
     duration: Optional[int] = 5  # seconds for video / audio
     voice: Optional[str] = None  # for audio
+    options: Optional[dict] = None  # arbitrary studio toggles (upscale, denoise, etc.)
+
+    model_config = {"extra": "ignore"}
 
 
 PLACEHOLDER_IMAGES = [
@@ -93,7 +97,9 @@ def build_router(db):
             "type": payload.kind,
             "prompt": payload.prompt,
             "style": payload.style,
+            "model": payload.model,
             "aspect_ratio": payload.aspect_ratio,
+            "options": payload.options or {},
             "status": "processing",
             "output_url": None,
             "created_at": datetime.now(timezone.utc).isoformat(),
