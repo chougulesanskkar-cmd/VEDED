@@ -1,56 +1,62 @@
-import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "@/lib/auth";
+import { Toaster } from "sonner";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import AppShell from "@/components/AppShell";
+import Dashboard from "@/pages/Dashboard";
+import ImagesStudio from "@/pages/ImagesStudio";
+import VideoStudio from "@/pages/VideoStudio";
+import AudioLab from "@/pages/AudioLab";
+import MoviesStudio from "@/pages/MoviesStudio";
+import WebSeriesStudio from "@/pages/WebSeriesStudio";
+import ShortsStudio from "@/pages/ShortsStudio";
+import BookStream from "@/pages/BookStream";
+import BookStreamDetail from "@/pages/BookStreamDetail";
+import Pricing from "@/pages/Pricing";
+import PaymentSuccess from "@/pages/PaymentSuccess";
+import PaymentCancel from "@/pages/PaymentCancel";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
-  return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
-  );
-};
+function Protected({ children }) {
+    const { user } = useAuth();
+    if (!user) return <Navigate to="/login" replace />;
+    return children;
+}
 
 function App() {
-  return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
-  );
+    return (
+        <AuthProvider>
+            <BrowserRouter>
+                <Toaster theme="dark" position="top-right" richColors />
+                <Routes>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+
+                    {/* App shell routes */}
+                    <Route element={<Protected><AppShell /></Protected>}>
+                        <Route path="/app" element={<Dashboard />} />
+                        <Route path="/app/images" element={<ImagesStudio />} />
+                        <Route path="/app/audio" element={<AudioLab />} />
+                        <Route path="/app/video" element={<VideoStudio />} />
+                        <Route path="/app/movies" element={<MoviesStudio />} />
+                        <Route path="/app/web-series" element={<WebSeriesStudio />} />
+                        <Route path="/app/shorts" element={<ShortsStudio />} />
+                        <Route path="/app/bookstream" element={<BookStream />} />
+                        <Route path="/app/bookstream/:id" element={<BookStreamDetail />} />
+                        <Route path="/app/pricing" element={<Pricing />} />
+                    </Route>
+
+                    <Route path="/payment/success" element={<Protected><PaymentSuccess /></Protected>} />
+                    <Route path="/payment/cancel" element={<Protected><PaymentCancel /></Protected>} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
+    );
 }
 
 export default App;
