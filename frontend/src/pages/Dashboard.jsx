@@ -111,15 +111,7 @@ export default function Dashboard() {
                             {creations.slice(0, 4).map((c) => (
                                 <div key={c.id} className="v-card v-card-hoverlift overflow-hidden" data-testid={`recent-${c.id}`}>
                                     <div className="aspect-video bg-black overflow-hidden">
-                                        {(c.type === "video" || c.type === "movie") ? (
-                                            <video src={c.output_url} muted loop autoPlay playsInline className="w-full h-full object-cover" />
-                                        ) : c.type === "audio" ? (
-                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--v-surface-3)] to-black">
-                                                <Mic size={44} className="text-[var(--v-lime)]" />
-                                            </div>
-                                        ) : (
-                                            <img src={c.output_url} alt="" className="w-full h-full object-cover" />
-                                        )}
+                                        <RecentThumb c={c} />
                                     </div>
                                     <div className="p-3">
                                         <div className="text-[13px] line-clamp-1">{c.prompt}</div>
@@ -153,6 +145,20 @@ export default function Dashboard() {
             </div>
         </div>
     );
+}
+
+function RecentThumb({ c }) {
+    if (c.type === "video" || c.type === "movie") {
+        return <video src={c.output_url} muted loop autoPlay playsInline className="w-full h-full object-cover" />;
+    }
+    if (c.type === "audio") {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--v-surface-3)] to-black">
+                <Mic size={44} className="text-[var(--v-lime)]" />
+            </div>
+        );
+    }
+    return <img src={c.output_url} alt="" className="w-full h-full object-cover" />;
 }
 
 function WalletTile({ label, value, testId }) {

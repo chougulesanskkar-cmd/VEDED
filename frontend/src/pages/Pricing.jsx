@@ -96,6 +96,17 @@ export default function Pricing() {
     );
 }
 
+function planCta({ owned, plan, loading }) {
+    if (owned) return "Current plan";
+    if (plan.price_usd === 0) return "Included free";
+    if (loading) return "Loading…";
+    return (
+        <>
+            <Sparkles size={14} /> Upgrade
+        </>
+    );
+}
+
 function PlanCard({ plan, onBuy, loading, owned }) {
     const highlight = plan.highlight;
     return (
@@ -131,11 +142,7 @@ function PlanCard({ plan, onBuy, loading, owned }) {
                 onClick={onBuy}
                 className={`v-btn w-full mt-6 disabled:opacity-60 ${highlight ? "v-btn-lime" : "v-btn-ghost"}`}
             >
-                {owned ? "Current plan" : plan.price_usd === 0 ? "Included free" : loading ? "Loading…" : (
-                    <>
-                        <Sparkles size={14} /> Upgrade
-                    </>
-                )}
+                {planCta({ owned, plan, loading })}
             </button>
         </div>
     );

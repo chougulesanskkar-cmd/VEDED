@@ -1,6 +1,6 @@
 """BookStream endpoints: content browse, detail, dubbing, free trial."""
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
@@ -20,33 +20,33 @@ class TrialReq(BaseModel):
     device_fingerprint: str
 
 
-PLACEHOLDER_DUB_AUDIO = [
+PLACEHOLDER_DUB_AUDIO: List[str] = [
     "https://cdn.pixabay.com/audio/2022/10/25/audio_69a61cd719.mp3",
     "https://cdn.pixabay.com/audio/2023/06/13/audio_5fb0c1d3d3.mp3",
 ]
 
 
-def build_router(db):
+def build_router(db) -> APIRouter:
     @router.get("/content")
-    async def list_content(type: Optional[str] = None):
+    async def list_content(type: Optional[str] = None) -> Dict[str, Any]:
         items = BOOKSTREAM_CONTENT
         if type:
             items = [c for c in items if c["type"] == type]
         return {"items": items}
 
     @router.get("/content/{cid}")
-    async def get_content(cid: str):
+    async def get_content(cid: str) -> Dict[str, Any]:
         for c in BOOKSTREAM_CONTENT:
             if c["id"] == cid:
                 return c
         raise HTTPException(404, "Content not found")
 
     @router.get("/languages")
-    async def list_languages():
+    async def list_languages() -> Dict[str, Any]:
         return {"items": DUBBING_LANGUAGES}
 
     @router.post("/dub")
-    async def dub_content(payload: DubReq, user_id: str = Depends(get_current_user_id)):
+    async def dub_content(payload: DubReq, user_id: str = Depends(get_current_user_id)) -> Dict[str, Any]:
         u = await db.users.find_one({"id": user_id})
         if not u:
             raise HTTPException(404, "User not found")
@@ -82,13 +82,13 @@ def build_router(db):
         return {"track": track_out, "wallet": u2.get("wallet", {})}
 
     @router.get("/my-dubs")
-    async def my_dubs(user_id: str = Depends(get_current_user_id)):
+    async def my_dubs(user_id: str = Depends(get_current_user_id)) -> Dict[str, Any]:
         cur = db.dubbed_tracks.find({"user_id": user_id}, {"_id": 0}).sort("created_at", -1)
         items = await cur.to_list(200)
         return {"items": items}
 
     @router.post("/trial")
-    async def use_trial(payload: TrialReq, user_id: str = Depends(get_current_user_id)):
+    async def use_trial(payload: TrialReq, user_id: str = Depends(get_current_user_id)) -> Dict[str, Any]:
         u = await db.users.find_one({"id": user_id})
         if not u:
             raise HTTPException(404, "User not found")

@@ -73,32 +73,43 @@ export default function BookStreamDetail() {
                         <span>{content.creator}</span> · <span>{content.duration}</span> · <span>{content.views} views</span>
                     </div>
                     <div className="mt-6 flex flex-wrap gap-3">
-                        {canPlay ? (
-                            <button
-                                data-testid="bs-play"
-                                onClick={() => setPlaying(!playing)}
-                                className="v-btn v-btn-lime px-6 py-3"
-                            >
-                                {playing ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
-                                {playing ? "Pause" : (trialActive ? "Play Free Preview" : "Play")}
-                            </button>
-                        ) : trialAvailable ? (
-                            <button
-                                data-testid="bs-trial"
-                                onClick={startTrial}
-                                className="v-btn v-btn-lime px-6 py-3"
-                            >
-                                <Sparkles size={15} /> Start 1-video free trial
-                            </button>
-                        ) : (
-                            <button
-                                data-testid="bs-subscribe"
-                                onClick={() => nav("/app/pricing")}
-                                className="v-btn v-btn-lime px-6 py-3"
-                            >
-                                Subscribe to Watch
-                            </button>
-                        )}
+                        {(() => {
+                            if (canPlay) {
+                                let playLabel = "Play";
+                                if (playing) playLabel = "Pause";
+                                else if (trialActive) playLabel = "Play Free Preview";
+                                return (
+                                    <button
+                                        data-testid="bs-play"
+                                        onClick={() => setPlaying(!playing)}
+                                        className="v-btn v-btn-lime px-6 py-3"
+                                    >
+                                        {playing ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" />}
+                                        {playLabel}
+                                    </button>
+                                );
+                            }
+                            if (trialAvailable) {
+                                return (
+                                    <button
+                                        data-testid="bs-trial"
+                                        onClick={startTrial}
+                                        className="v-btn v-btn-lime px-6 py-3"
+                                    >
+                                        <Sparkles size={15} /> Start 1-video free trial
+                                    </button>
+                                );
+                            }
+                            return (
+                                <button
+                                    data-testid="bs-subscribe"
+                                    onClick={() => nav("/app/pricing")}
+                                    className="v-btn v-btn-lime px-6 py-3"
+                                >
+                                    Subscribe to Watch
+                                </button>
+                            );
+                        })()}
                     </div>
                 </div>
             </div>

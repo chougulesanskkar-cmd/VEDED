@@ -8,6 +8,8 @@ import {
     DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
+const ETA_BY_KIND = { video: "28s", audio: "8s", movie: "4m", image: "4.2s" };
+
 /**
  * Props:
  *  - kind: "image" | "video" | "audio" | "movie"
@@ -179,7 +181,7 @@ export default function GenerationStudio({
                     <div className="text-[11px] text-neutral-500 hidden sm:block">
                         <span className="tabular-nums">{prompt.length}/2000</span>
                         <span className="mx-2 text-neutral-700">·</span>
-                        <span>~{kind === "video" ? "28s" : kind === "audio" ? "8s" : kind === "movie" ? "4m" : "4.2s"}</span>
+                        <span>~{ETA_BY_KIND[kind] || "5s"}</span>
                     </div>
 
                     <button

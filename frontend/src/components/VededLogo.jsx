@@ -6,8 +6,14 @@ import { Link } from "react-router-dom";
  * Size options: "sm" | "md" | "lg". Provide `symbolOnly` to render only the V mark.
  */
 export default function VededLogo({ size = "md", subtitle = true, symbolOnly = false, to = "/", dataTestId = "veded-logo" }) {
-    const symbolSize = size === "sm" ? 28 : size === "lg" ? 48 : 34;
-    const titleSize = size === "sm" ? "text-[18px]" : size === "lg" ? "text-[32px]" : "text-[22px]";
+    let symbolSize = 34;
+    if (size === "sm") symbolSize = 28;
+    else if (size === "lg") symbolSize = 48;
+
+    let titleSize = "text-[22px]";
+    if (size === "sm") titleSize = "text-[18px]";
+    else if (size === "lg") titleSize = "text-[32px]";
+
     const Wrapper = to ? Link : "div";
     const wrapperProps = to ? { to } : {};
 
