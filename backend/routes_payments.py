@@ -52,10 +52,12 @@ def _apply_purchase(user_doc: dict, package_id: str) -> dict:
 def build_router(db):
     @router.get("/plans")
     async def get_plans():
+        from plans import FEATURE_GROUPS
         return {
             "veded": list(VEDED_PLANS.values()),
             "bookstream": list(BOOKSTREAM_PLANS.values()),
             "topups": list(TOPUP_PACKS.values()),
+            "feature_groups": FEATURE_GROUPS,
         }
 
     @router.post("/payments/checkout")

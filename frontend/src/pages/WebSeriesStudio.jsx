@@ -30,9 +30,9 @@ export default function WebSeriesStudio() {
     const nav = useNavigate();
     const [creations, setCreations] = useState([]);
 
-    // Gate: Pro tier or Team tier only
+    // Gate: Series, Pro or Team tier
     const tier = user?.veded_tier || "free";
-    const canAccess = tier === "veded_pro" || tier === "veded_team";
+    const canAccess = tier === "veded_series" || tier === "veded_pro" || tier === "veded_team";
 
     useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "video"))); }, []);
     const onCreate = (c) => setCreations([c, ...creations]);
@@ -45,13 +45,13 @@ export default function WebSeriesStudio() {
                     <div className="mx-auto w-16 h-16 rounded-2xl bg-[var(--v-surface-3)] border border-[var(--v-border)] flex items-center justify-center mb-6">
                         <Lock size={26} className="text-[var(--v-lime)]" />
                     </div>
-                    <div className="v-chip v-chip-lime mb-4">PRO / STUDIO EXCLUSIVE</div>
+                    <div className="v-chip v-chip-lime mb-4">SERIES / PRO / STUDIO EXCLUSIVE</div>
                     <h1 className="font-display-tight font-black text-4xl">Web Series Studio</h1>
                     <p className="text-neutral-400 mt-3 max-w-lg mx-auto">
                         Season planner with per-character cast bibles for visual consistency across episodes. Multi-episode dispatch with automatic recap intros and Sarvam dubbing.
                     </p>
                     <button onClick={() => nav("/app/pricing")} className="v-btn v-btn-lime mt-6" data-testid="webseries-upgrade">
-                        Upgrade to Pro · $29/mo
+                        Upgrade to Web Series · $119/mo
                     </button>
                 </div>
             </div>

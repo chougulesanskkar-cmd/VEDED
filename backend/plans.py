@@ -7,32 +7,79 @@ VEDED_PLANS = {
         "name": "Free",
         "price_usd": 0.0,
         "credits": {"image": 10, "video": 1, "audio_chars": 2000, "dubbing": 0},
-        "features": ["Standard queue", "Watermark on exports", "Community support"],
+        "features": [
+            "Gemini Nano Banana image gen (free tier)",
+            "ChatGPT-driven prompt suggestions",
+            "1 short AI video / month",
+            "Standard queue · watermark on exports",
+            "Community support",
+        ],
         "highlight": False,
+        "engine_note": "Free open models (Nano Banana, gpt-image-1). Watermarked exports.",
     },
     "veded_standard": {
         "id": "veded_standard",
         "name": "Standard",
         "price_usd": 12.0,
         "credits": {"image": 250, "video": 25, "audio_chars": 100000, "dubbing": 0},
-        "features": ["No watermark", "Fast queue", "HD 1080p export", "Multi-clip stitching"],
+        "features": [
+            "FLUX Schnell + Nano Banana image gen",
+            "Kling 3.0 image-to-video (5s clips)",
+            "Sarvam Bulbul v3 TTS · Hindi/Tamil/Telugu",
+            "No watermark · Fast queue",
+            "HD 1080p export · Multi-clip stitching",
+        ],
         "highlight": False,
+        "engine_note": "FLUX Schnell · Kling 3.0 · Sarvam Bulbul v3.",
     },
     "veded_pro": {
         "id": "veded_pro",
         "name": "Pro",
         "price_usd": 29.0,
         "credits": {"image": 750, "video": 75, "audio_chars": 300000, "dubbing": 100},
-        "features": ["Priority queue", "Commercial rights", "4K upscaling", "All studios unlocked"],
+        "features": [
+            "SDXL Turbo + Nano Banana Pro (high-res stills)",
+            "Sora 2 & Veo 3.1 text-to-video",
+            "Soul ID — character consistency lock",
+            "Cinematic camera controls (dolly, orbit, pan, tilt)",
+            "4K upscaling · Priority GPU queue",
+            "Commercial rights · Voice swapping & dubbing",
+        ],
         "highlight": True,
+        "engine_note": "SDXL Turbo · Sora 2 · Veo 3.1 · Sarvam Bulbul v3.",
+    },
+    "veded_series": {
+        "id": "veded_series",
+        "name": "Web Series",
+        "price_usd": 119.0,
+        "credits": {"image": 1500, "video": 150, "audio_chars": 800000, "dubbing": 500},
+        "features": [
+            "Everything in Pro, plus:",
+            "Season Planner + per-character Cast Bibles",
+            "Multi-episode dispatcher (dispatch 8 eps in parallel)",
+            "Auto-recap intros & Sarvam dub tracks per episode",
+            "First & Last frame interpolation across scenes",
+            "Wan 2.7 long-shot generation",
+        ],
+        "highlight": False,
+        "engine_note": "Series pipeline · Wan 2.7 · Sora 2 · Sarvam dub. Ideal for content channels.",
     },
     "veded_team": {
         "id": "veded_team",
         "name": "Team / Studio",
         "price_usd": 199.0,
         "credits": {"image": 2500, "video": 250, "audio_chars": 1500000, "dubbing": 1000},
-        "features": ["5 shared seats", "Long-format Movie Compiler", "Shared workspace", "Highest priority GPU"],
+        "features": [
+            "Everything in Web Series, plus:",
+            "Long-Format Movie Compiler (30–60 min MP4)",
+            "Automated Script-to-Movie · FFmpeg stitching",
+            "5 shared seats ($25/extra seat)",
+            "Shared cloud asset storage & workspace",
+            "Highest priority GPU cluster · 4K master exports",
+            "Audio lip-sync for avatars",
+        ],
         "highlight": False,
+        "engine_note": "Full engine access · lip-sync · movie compiler pipeline.",
     },
 }
 
@@ -43,7 +90,13 @@ BOOKSTREAM_PLANS = {
         "name": "BookStream Standard",
         "price_usd": 7.49,
         "credits": {"dubbing": 100},
-        "features": ["Unlimited Audiobooks", "20 web series eps / mo", "HD 1080p, offline 5 titles"],
+        "features": [
+            "Unlimited audiobook streaming (default languages)",
+            "20 AI web series episodes / mo",
+            "100 monthly dubbing credits",
+            "HD audio · 1080p video",
+            "Offline downloads (up to 5 titles)",
+        ],
         "highlight": False,
     },
     "bookstream_pro": {
@@ -51,7 +104,13 @@ BOOKSTREAM_PLANS = {
         "name": "BookStream Pro",
         "price_usd": 14.99,
         "credits": {"dubbing": 300},
-        "features": ["5 Full AI Movies / mo", "4K Ultra HD", "Spatial audio", "2 screens"],
+        "features": [
+            "5 full-length AI movies / mo",
+            "Unlimited audiobooks & short web series",
+            "300 monthly dubbing credits (Sarvam AI)",
+            "4K Ultra HD · Spatial audio",
+            "Unlimited offline downloads · 2 screens",
+        ],
         "highlight": True,
     },
     "bookstream_family": {
@@ -59,31 +118,82 @@ BOOKSTREAM_PLANS = {
         "name": "BookStream Family",
         "price_usd": 29.99,
         "credits": {"dubbing": 1000},
-        "features": ["4 profiles", "Unlimited movies + series", "4 screens", "Kids filter"],
+        "features": [
+            "4 active profiles · 4 simultaneous screens",
+            "Unlimited audiobooks, web series & movies",
+            "1,000 shared monthly dubbing credits",
+            "Kids profile filters",
+            "Early access to new adaptations",
+        ],
         "highlight": False,
     },
 }
 
-# One-time top-up packs (credit cash + specific credits)
+# One-time top-up packs
 TOPUP_PACKS = {
-    "topup_10": {"id": "topup_10", "name": "Creator Top-Up", "price_usd": 10.0, "cash_credit": 6.0, "image": 60, "video": 6},
-    "topup_50": {"id": "topup_50", "name": "Studio Top-Up", "price_usd": 50.0, "cash_credit": 25.0, "image": 300, "video": 30},
-    "pocket_pack": {"id": "pocket_pack", "name": "Pocket Dubbing Pack", "price_usd": 2.99, "dubbing": 50},
-    "binge_pack": {"id": "binge_pack", "name": "Binge Dubbing Pack", "price_usd": 7.49, "dubbing": 150},
-    "ultimate_pack": {"id": "ultimate_pack", "name": "Ultimate Dubbing Pack", "price_usd": 19.49, "dubbing": 500},
+    "topup_10": {"id": "topup_10", "name": "Creator Top-Up", "price_usd": 10.0, "cash_credit": 6.0, "image": 60, "video": 6,
+                  "features": ["+60 image credits", "+6 video credits", "$6 API credit"]},
+    "topup_50": {"id": "topup_50", "name": "Studio Top-Up", "price_usd": 50.0, "cash_credit": 25.0, "image": 300, "video": 30,
+                  "features": ["+300 image credits", "+30 video credits", "$25 API credit"]},
+    "pocket_pack": {"id": "pocket_pack", "name": "Pocket Dubbing Pack", "price_usd": 2.99, "dubbing": 50,
+                     "features": ["+50 dubbing credits", "~10 video episode dubs", "OR 50 audio chapters"]},
+    "binge_pack": {"id": "binge_pack", "name": "Binge Dubbing Pack", "price_usd": 7.49, "dubbing": 150,
+                    "features": ["+150 dubbing credits", "~30 video episode dubs", "OR 6 full movie dubs"]},
+    "ultimate_pack": {"id": "ultimate_pack", "name": "Ultimate Dubbing Pack", "price_usd": 19.49, "dubbing": 500,
+                       "features": ["+500 dubbing credits", "Unlimited season dubbing", "Best margin & value"]},
 }
 
 ALL_PACKAGES = {**VEDED_PLANS, **BOOKSTREAM_PLANS, **TOPUP_PACKS}
 
-# Cost per generation (credits deducted)
+# Cost per generation
 GENERATION_COST = {
     "image": {"credit_field": "image_credits", "amount": 1},
     "video": {"credit_field": "video_credits", "amount": 1},
-    "audio": {"credit_field": "audio_chars", "amount": 500},  # per audio generation ~500 chars
+    "audio": {"credit_field": "audio_chars", "amount": 500},
     "dubbing": {"credit_field": "dubbing_credits", "amount": 5},
 }
 
-# Seeded BookStream content
+# Feature groups for the pricing page (marketing copy)
+FEATURE_GROUPS = [
+    {
+        "title": "AI Image Creation",
+        "icon": "image",
+        "items": [
+            "Multi-Engine Generation — FLUX Schnell, SDXL Turbo, Nano Banana Pro",
+            "Soul ID — lock a character's face across every prompt & scene",
+            "Image Canvas & Inpainting — brush regions to swap backgrounds, clothes, props",
+        ],
+    },
+    {
+        "title": "AI Video & Motion Studio",
+        "icon": "video",
+        "items": [
+            "Text-to-Video & Image-to-Video — Sora 2, Kling 3.0, Veo 3.1, Wan 2.7",
+            "Cinematic camera controls — dolly zooms, orbital spins, pan & tilt",
+            "First & Last frame interpolation between two images",
+            "4K upscaling & neural frame continuity",
+        ],
+    },
+    {
+        "title": "Voice & Audio Studio (Sarvam AI)",
+        "icon": "mic",
+        "items": [
+            "Regional voiceovers (Bulbul v3) — 10+ Indian accents",
+            "Voice swapping & audio translation while retaining tone",
+            "Audio lip-syncing for generated avatars",
+        ],
+    },
+    {
+        "title": "Long-Format Movie Compiler",
+        "icon": "clapperboard",
+        "items": [
+            "Automated Script-to-Movie engine — script → 5-second shots + voice",
+            "FFmpeg stitching pipeline — crossfades, captions, transitions",
+            "Serverless render farm compiles 30–60 min MP4 masters",
+        ],
+    },
+]
+
 BOOKSTREAM_CONTENT = [
     {"id": "the-neon-archive", "title": "The Neon Archive", "type": "web_series", "genre": "Sci-Fi Epic",
      "cover": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800", "duration": "42:15", "views": "1.2M",
@@ -119,7 +229,6 @@ BOOKSTREAM_CONTENT = [
      "description": "A florist grows the last garden on Earth inside a decaying steel mill."},
 ]
 
-# Supported dubbing languages (Sarvam Bulbul v3 style)
 DUBBING_LANGUAGES = [
     {"code": "hi", "name": "Hindi", "accent": "North Indian"},
     {"code": "ta", "name": "Tamil", "accent": "Chennai"},
