@@ -21,7 +21,7 @@ const STYLES = [
 
 export default function AudioLab() {
     const [creations, setCreations] = useState([]);
-    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "audio"))); }, []);
+    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "audio"))); }, []); // eslint-disable-line react-hooks/exhaustive-deps
     const onCreate = (c) => setCreations([c, ...creations]);
     const onDelete = async (id) => { await api.delete(`/veded/creations/${id}`); setCreations(creations.filter(c => c.id !== id)); };
     return (

@@ -24,7 +24,7 @@ const RATIOS = [
 
 export default function ShortsStudio() {
     const [creations, setCreations] = useState([]);
-    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "video"))); }, []);
+    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "video"))); }, []); // eslint-disable-line react-hooks/exhaustive-deps
     const onCreate = (c) => setCreations([c, ...creations]);
     const onDelete = async (id) => { await api.delete(`/veded/creations/${id}`); setCreations(creations.filter(c => c.id !== id)); };
     return (

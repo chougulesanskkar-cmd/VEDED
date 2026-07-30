@@ -77,8 +77,8 @@ export default function Landing() {
                         </div>
                         <div className="mt-10 flex items-center gap-6 text-xs text-neutral-500">
                             <div className="flex -space-x-2">
-                                {[1,2,3,4].map((i) => (
-                                    <div key={i} className="w-7 h-7 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-800 border-2 border-[var(--v-bg)]" />
+                                {["a","b","c","d"].map((k) => (
+                                    <div key={`avatar-${k}`} className="w-7 h-7 rounded-full bg-gradient-to-br from-neutral-700 to-neutral-800 border-2 border-[var(--v-bg)]" />
                                 ))}
                             </div>
                             <span>Trusted by 12,400+ creators</span>
@@ -122,8 +122,8 @@ export default function Landing() {
                     <a href="#pricing" className="hidden md:block v-link text-sm font-semibold">See pricing →</a>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {STUDIOS.map((s, i) => (
-                        <div key={i} className="v-card v-card-hoverlift p-6" data-testid={`studio-${s.title.toLowerCase().replace(/\s+/g,'-')}`}>
+                    {STUDIOS.map((s) => (
+                        <div key={s.title} className="v-card v-card-hoverlift p-6" data-testid={`studio-${s.title.toLowerCase().replace(/\s+/g,'-')}`}>
                             <div className="w-12 h-12 rounded-xl bg-[var(--v-surface-3)] border border-[var(--v-border)] flex items-center justify-center mb-4">
                                 <s.icon size={20} className="text-[var(--v-lime)]" />
                             </div>
@@ -152,7 +152,7 @@ export default function Landing() {
                     </div>
                     <div className="grid grid-cols-3 gap-3">
                         {SHOWCASE.slice(0,3).map((s, i) => (
-                            <div key={i} className={`rounded-xl overflow-hidden border border-[var(--v-border)] ${i === 1 ? "translate-y-8" : ""}`}>
+                            <div key={s} className={`rounded-xl overflow-hidden border border-[var(--v-border)] ${i === 1 ? "translate-y-8" : ""}`}>
                                 <img src={s} alt="" className="w-full h-72 object-cover" />
                             </div>
                         ))}

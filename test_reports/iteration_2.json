@@ -1,0 +1,21 @@
+{
+  "summary": "Regression pass after code-review-driven fixes (stable keys in Landing.jsx, `is False/True` -> `== False/True` in backend_test.py L53/L172, eslint-disable-next-line comments on mount-only useEffects across studios/dashboard/bookstream/auth). All previous behavior preserved: 25/25 pytest tests pass end-to-end; Playwright E2E confirms Landing renders (4 hero avatars, 7 Seven-Studios cards incl. Book Stream, 3 BookStream teaser covers), Signup -> /app dashboard works, all 6 studios load (Images/Audio/Video/Shorts/Movies/WebSeries) with prompt inputs, Movies + WebSeries paywalls visible (data-testid=movies-upgrade and webseries-upgrade both present), BookStream grid shows 4 sections with trending/shorts items, detail page opens with bs-trial/bs-dub-btn/bs-lang-select intact, Pricing shows 4 feature-group cards, 5 VEDED tiers (free + veded_standard/pro/series/team — veded_series card contains '$119'), 3 BookStream tiers, 5 top-up packs, and clicking Buy on veded_standard successfully navigated to a real https://checkout.stripe.com/... URL. Real Nano Banana image generation still returns generator_used='gemini-nano-banana' and a data:image/jpeg;base64,... payload (~917 KB verified via curl). ZERO React console errors on any page. No regressions detected.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Prior iteration_1 comments still apply (JWT_SECRET dev fallback, audio-char max(len,500) over-charge on long prompts, hardcoded 'sk_test_emergent' fallback in routes_payments.py, CORS allow_origins=['*'] with allow_credentials=True, trial device_fingerprint edge case). No new issues introduced by this fix pass.",
+    "Pricing.jsx render is agnostic of the 'free' tier data-testid (uses plan-<id> which yields plan-free). Selector convention is slightly inconsistent (plan-free vs plan-veded_*) but not a bug."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (25/25)", "frontend": "100%"},
+  "test_credentials": "Fresh signup users per run (regress<ts>@veded.io / password123). Seed artist@veded.io not pre-created but signup path works.",
+  "seed_data_creation": "None. Tests self-provision.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Behavior-neutral fix pass validated. Confirmed testid patterns: Landing uses studio-<slug> (not studio-card-*), BookStream uses bs-section-*/trending-*/short-*/rec-* (not bs-card-*), Pricing uses plan-<id>/feature-group-<icon>/topup-<id>/buy-<id>/tab-veded|bookstream|topups. Pricing route is /app/pricing (protected), Web Series route is /app/web-series (hyphenated). Backend /api/plans returns veded ids: [free, veded_standard, veded_pro, veded_series, veded_team]. Nano Banana still emitting real base64 JPEG (~917 KB). Sarvam dub returns 402 for free users as expected."
+}

@@ -50,7 +50,7 @@ def test_signup_and_wallet_defaults(auth):
     assert w["video_credits"] == 1
     assert w["audio_chars"] == 2000
     assert w["dubbing_credits"] == 0
-    assert u["trial_used"] is False
+    assert u["trial_used"] == False
 
 
 def test_signup_duplicate(session):
@@ -169,7 +169,7 @@ def test_bookstream_trial_first_ok(session, auth_headers):
     r = session.post(f"{API}/bookstream/trial", headers=auth_headers,
                      json={"content_id": "the-neon-archive", "device_fingerprint": fp})
     assert r.status_code == 200, r.text
-    assert r.json()["granted"] is True
+    assert r.json()["granted"] == True
 
 
 def test_bookstream_trial_second_blocked(session, auth_headers):

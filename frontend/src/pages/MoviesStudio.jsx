@@ -33,7 +33,7 @@ export default function MoviesStudio() {
 
     const isTeam = user?.veded_tier === "veded_team";
 
-    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "movie"))); }, []);
+    useEffect(() => { api.get("/veded/creations").then((r) => setCreations((r.data.items || []).filter(c => c.type === "movie"))); }, []); // eslint-disable-line react-hooks/exhaustive-deps
     const onCreate = (c) => setCreations([c, ...creations]);
     const onDelete = async (id) => { await api.delete(`/veded/creations/${id}`); setCreations(creations.filter(c => c.id !== id)); };
 

@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
         if (localStorage.getItem("veded_token") && user) {
             refresh();
         }
-        // eslint-disable-next-line
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

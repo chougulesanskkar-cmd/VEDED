@@ -13,7 +13,7 @@ const CHANNELS = [
 export default function BookStream() {
     const nav = useNavigate();
     const [items, setItems] = useState([]);
-    useEffect(() => { api.get("/bookstream/content").then((r) => setItems(r.data.items || [])); }, []);
+    useEffect(() => { api.get("/bookstream/content").then((r) => setItems(r.data.items || [])); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const shorts = items.slice(0, 5);
     const trending = items.filter(c => c.type !== "audiobook").slice(0, 4);

@@ -20,6 +20,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         api.get("/veded/creations").then((r) => setCreations(r.data.items || [])).catch(() => {});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const wallet = user?.wallet || {};
